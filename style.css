@@ -1,0 +1,28 @@
+body {
+    padding: 20px;
+}
+
+#reportsSection, #aboutSection {
+    display: none;
+}
+
+.nav-link {
+    cursor: pointer;
+}
+
+.card {
+    display: inline-block;
+}
+
+.loadingGif{
+    /* Resizes the loading gif: */
+    height: 30px;
+    width: 30px;
+
+}
+
+.search{
+    
+    text-align: right;
+    
+}
