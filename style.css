@@ -1,8 +1,16 @@
+
 body {
     padding: 20px;
+    background-image: url('assets/images/backgroundImage.jpg');
+
+
 }
 
-#reportsSection, #aboutSection {
+#homeSection{
+    text-align: center;
+}
+#reportsSection,
+#aboutSection {
     display: none;
 }
 
@@ -12,17 +20,20 @@ body {
 
 .card {
     display: inline-block;
+    overflow: hidden;
+
 }
 
-.loadingGif{
+
+.loadingGif {
     /* Resizes the loading gif: */
     height: 30px;
     width: 30px;
 
 }
 
-.search{
-    
+.search {
+
     text-align: right;
-    
+
 }

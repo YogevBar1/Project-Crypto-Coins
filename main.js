@@ -3,9 +3,15 @@
 "use strict";
 
 $(() => {
-    //check
+
 
     handleHome();
+
+    // Clean the storage before open new page
+    localStorage.clear();
+
+
+
 
     $("a.nav-link").click(function () {
 
@@ -19,6 +25,8 @@ $(() => {
         $("#" + sectionId).show();
 
     });
+
+
 
     $("#coinsContainer").on("click", ".more-info", async function () {
         const coinId = $(this).attr("id").substring(7);
@@ -77,7 +85,7 @@ $(() => {
                         More Info
                     </button>
                     <div style="min-height: 120px;">
-                        <div class="collapse collapse-horizontal" id="collapse_${coins[i].id}">
+                        <div class="collapse collapse" id="collapse_${coins[i].id}">
                             <div class="card card-body" style="width: 150px;">
                                 <img class="loadingGif" src="assets/images/wait.gif" alt="Loading...">
                             </div>
@@ -91,22 +99,112 @@ $(() => {
         $("#coinsContainer").html(html);
     }
 
+    /* 
+         async function handleMoreInfo(coinId) {
+            // Check if the data already in the local storage:
+            if (localStorage.getItem(coinId) === null) {
+                const coin = await getJson("https://api.coingecko.com/api/v3/coins/" + coinId);
+                const imageSource = coin.image.thumb;
+                const usd = coin.market_data.current_price.usd;
+                const eur = coin.market_data.current_price.eur;
+                const ils = coin.market_data.current_price.ils;
+                const moreInfo = `
+            <img src="${imageSource}"> <br>
+            USD: $${usd} <br>
+            EUR: €${eur} <br>
+            ILS: ₪${ils} 
+            `;
+                $(`#collapse_${coinId}`).children().html(moreInfo);
+    
+                // Insert the Data to the local storage:
+                localStorage.setItem(`${coinId}`, JSON.stringify({
+                    imageSource,
+                    usd,
+                    eur,
+                    ils
+                }));
+    
+                // Remove data from local storage after 2 minutes
+                setTimeout(() => {
+                    localStorage.removeItem(coinId);
+                }, 120000);
+            }
+            else {
+                // Currency information found in local storage, display stored data
+                const storageData = JSON.parse(localStorage.getItem(`${coinId}`));
+                // Generate HTML content with the retrieved data
+                const storedInfo = `
+                <img src="${storageData.imageSource}"> <br>
+                USD: $${storageData.usd} <br>
+                EUR: €${storageData.eur} <br>
+                ILS: ₪${storageData.ils} 
+                `;
+    
+                // Clear the existing content of the collapsible element
+                $(`.${coinId}`).empty();
+    
+                // Update the collapsible element with the new HTML content
+                $(`.${coinId}`).append(storedInfo);
+    
+            }
+    
+        }
+        */
+
     //Handles the "More Info" button click event.
     async function handleMoreInfo(coinId) {
-        console.log("check");
-
-        const coin = await getJson("https://api.coingecko.com/api/v3/coins/" + coinId);
-        const imageSource = coin.image.thumb;
-        const usd = coin.market_data.current_price.usd;
-        const eur = coin.market_data.current_price.eur;
-        const ils = coin.market_data.current_price.ils;
-        const moreInfo = `
+        if (localStorage.getItem(coinId) === null) {
+            const coin = await getJson("https://api.coingecko.com/api/v3/coins/" + coinId);
+            const imageSource = coin.image.thumb;
+            const usd = coin.market_data.current_price.usd;
+            const eur = coin.market_data.current_price.eur;
+            const ils = coin.market_data.current_price.ils;
+            const moreInfo = `
             <img src="${imageSource}"> <br>
             USD: $${usd} <br>
             EUR: Є${eur} <br>
             ILS: ₪${ils}
         `;
-        $(`#collapse_${coinId}`).children().html(moreInfo);
+
+
+
+            // $(`#collapse_${coinId}`).children().html(moreInfo);
+            $(`#collapse_${coinId}`).html(moreInfo);
+
+            // Insert the Data to the local storage:
+            localStorage.setItem(`${coinId}`, JSON.stringify({
+                imageSource,
+                usd,
+                eur,
+                ils
+            }));
+
+            // Remove data from local storage after 2 minutes
+            setTimeout(() => {
+                localStorage.removeItem(coinId);
+            }, 120000);
+
+        }
+
+        else {
+            // Currency information found in local storage, display stored data
+            const storageData = JSON.parse(localStorage.getItem(`${coinId}`));
+            // Generate HTML content with the retrieved data
+            const storedInfo = `
+                <img src="${storageData.imageSource}"> <br>
+                USD: $${storageData.usd} <br>
+                EUR: €${storageData.eur} <br>
+                ILS: ₪${storageData.ils} 
+                `;
+
+            // Clear the existing content of the collapsible element
+            $(`.${coinId}`).empty();
+
+            // Update the collapsible element with the new HTML content
+            $(`.${coinId}`).append(storedInfo);
+
+        }
+
 
     }
 
@@ -257,5 +355,6 @@ $(() => {
         //hide model:
         $("#myModal").modal("hide");
     })
+
 
 });
