@@ -3,15 +3,12 @@
 "use strict";
 
 $(() => {
-
+    // let chart; // Declare the chart variable outside of the handleHome() function
 
     handleHome();
 
     // Clean the storage before open new page
     localStorage.clear();
-
-
-
 
     $("a.nav-link").click(function () {
 
@@ -26,20 +23,23 @@ $(() => {
 
     });
 
-
-
     $("#coinsContainer").on("click", ".more-info", async function () {
         const coinId = $(this).attr("id").substring(7);
         await handleMoreInfo(coinId);
     });
 
     $("#homeLink").click(async () => await handleHome());
-    $("#reportsLink").click(() => { });
-    $("#aboutLink").click(() => { });
 
+    $("#reportsLink").click(() => {
+        handleReports();
+
+    });
+
+    $("#aboutLink").click(() => {
+
+    });
 
     //Handles the home section.
-
     async function handleHome() {
         // Retrieve selected coins from local storage or use an empty array
         const selectedCoins = JSON.parse(localStorage.getItem("selectedCoins")) || [];
@@ -49,16 +49,14 @@ $(() => {
         });
         localStorage.removeItem("selectedCoins"); // Clear selected coins from local storage
 
-
         // Change it before finish!!!!!!!!!!!!!!!!!!!!!!!:
         const coins = await getJson("coins.json");
         // const coins = await getJson("https://api.coingecko.com/api/v3/coins/list");
         displayCoins(coins);
-        toggleCoin("vix");
-        toggleCoin("zrx");
-        toggleCoin("1mb");
-        toggleCoin("oxd");
-
+        toggleCoin("zoc");
+        // toggleCoin("zrx");
+        // toggleCoin("1mb");
+        // toggleCoin("oxd");
     }
 
     // Displays the coins in the UI.
@@ -67,20 +65,15 @@ $(() => {
         let html = "";
         for (let i = 0; i < 100; i++) {
             html += `
-            <div class="card"  style="width: 18rem; height: 20rem; overflow: auto;" id="${coins[i].symbol}">
-            
-                <div class="card-body">
 
+            <div class="card"  style="width: 18rem; height: 20rem; overflow: auto;" id="${coins[i].symbol}">
+                <div class="card-body">
                 <div class="form-check form-switch">
                 <input class="form-check-input toggle-card" type="checkbox" id="toggle_${coins[i].id}">
                 <label class="form-check-label" for="toggle_${coins[i].id}"></label>
                 </div>
-
                     <h5 class="card-title">${coins[i].symbol}</h5>
                     <p class="card-text">${coins[i].name}</p>
-
-
-
                     <button id="button_${coins[i].id}" class="btn btn-primary more-info" data-bs-toggle="collapse" data-bs-target="#collapse_${coins[i].id}" >
                         More Info
                     </button>
@@ -91,65 +84,14 @@ $(() => {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             `;
         }
+
         $("#coinsContainer").html(html);
     }
 
-    /* 
-         async function handleMoreInfo(coinId) {
-            // Check if the data already in the local storage:
-            if (localStorage.getItem(coinId) === null) {
-                const coin = await getJson("https://api.coingecko.com/api/v3/coins/" + coinId);
-                const imageSource = coin.image.thumb;
-                const usd = coin.market_data.current_price.usd;
-                const eur = coin.market_data.current_price.eur;
-                const ils = coin.market_data.current_price.ils;
-                const moreInfo = `
-            <img src="${imageSource}"> <br>
-            USD: $${usd} <br>
-            EUR: €${eur} <br>
-            ILS: ₪${ils} 
-            `;
-                $(`#collapse_${coinId}`).children().html(moreInfo);
-    
-                // Insert the Data to the local storage:
-                localStorage.setItem(`${coinId}`, JSON.stringify({
-                    imageSource,
-                    usd,
-                    eur,
-                    ils
-                }));
-    
-                // Remove data from local storage after 2 minutes
-                setTimeout(() => {
-                    localStorage.removeItem(coinId);
-                }, 120000);
-            }
-            else {
-                // Currency information found in local storage, display stored data
-                const storageData = JSON.parse(localStorage.getItem(`${coinId}`));
-                // Generate HTML content with the retrieved data
-                const storedInfo = `
-                <img src="${storageData.imageSource}"> <br>
-                USD: $${storageData.usd} <br>
-                EUR: €${storageData.eur} <br>
-                ILS: ₪${storageData.ils} 
-                `;
-    
-                // Clear the existing content of the collapsible element
-                $(`.${coinId}`).empty();
-    
-                // Update the collapsible element with the new HTML content
-                $(`.${coinId}`).append(storedInfo);
-    
-            }
-    
-        }
-        */
 
     //Handles the "More Info" button click event.
     async function handleMoreInfo(coinId) {
@@ -159,6 +101,8 @@ $(() => {
             const usd = coin.market_data.current_price.usd;
             const eur = coin.market_data.current_price.eur;
             const ils = coin.market_data.current_price.ils;
+
+
             const moreInfo = `
             <img src="${imageSource}"> <br>
             USD: $${usd} <br>
@@ -293,13 +237,8 @@ $(() => {
             displayModalDialog();
         }
 
-        // Log the selected coins in the console
-        const selectedCoinNames = [];
-        $(".toggle-card:checked").each(function () {
-            const coinName = $(this).closest(".card").find(".card-title").text();
-            console.log(coinName);
-            selectedCoinNames.push(coinName);
-        });
+        const selectedCoinNames = recognizeSelectedCoinsReturnArrOfThereNames();
+
         console.log("Selected coins:", selectedCoinNames);
 
 
@@ -355,6 +294,144 @@ $(() => {
         //hide model:
         $("#myModal").modal("hide");
     })
+
+    function recognizeSelectedCoinsReturnArrOfThereNames() {
+        const selectedCoinNames = [];
+        $(".toggle-card:checked").each(function () {
+            const coinName = $(this).closest(".card").find(".card-title").text();
+            console.log(coinName);
+            selectedCoinNames.push(coinName);
+        });
+        return selectedCoinNames;
+
+    }
+
+    let coinData = {};
+
+    let intervalId;
+
+
+    function handleReports() {
+
+
+
+        console.log("handleReports start:");
+        const selectedCoins = recognizeSelectedCoinsReturnArrOfThereNames();
+        if (selectedCoins.length <= 0) {
+            alert("Please choose at least one coin");
+            $("#loadingGifContainer").hide();
+            return;
+
+        }
+
+        console.log(selectedCoins);
+        let coinsToShow = selectedCoins.map(coin => coin);
+        console.log(coinsToShow);
+        let coinsId = coinsToShow.join();
+        console.log(coinsId);
+
+        // let coinData = {};
+        cleanup(); // Call the cleanup function before starting the interval
+
+
+        intervalId = setInterval(function () {
+            getReportData(coinsId, function (data) {
+                if (data["Response"] === "Error") {
+                    alert("Error..");
+                    return;
+                }
+                for (let coin in data) {
+                    if (!coinData[coin]) {
+                        coinData[coin] = [];
+                    }
+                    coinData[coin].push({ x: new Date(), y: data[coin]["USD"] });
+
+                }
+
+                renderChart(coinData);
+
+                // Hide the loading GIF after data is updated
+                $("#loadingGifContainer").hide();
+
+            });
+        }, 2000)
+
+    }
+
+    function cleanup() {
+        clearInterval(intervalId); // Clear the interval
+        coinData = {}; // Reset the coinData object
+    }
+
+    // Get data of coins checked by the user
+    async function getReportData(symbols, callback) {
+
+        const response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symbols}&tsyms=usd,eur,ils`);
+        const data = await response.json()
+        callback(data);
+    }
+
+    function renderChart(coinsData) {
+        let dataObjects = [];
+
+        for (let coin in coinsData) {
+
+            dataObjects.push({
+                type: "spline",
+                showInLegend: true,
+                name: coin,
+                dataPoints: coinsData[coin]
+            });
+
+        }
+
+
+        let chart = new CanvasJS.Chart("chartContainer", {
+            title: {
+                text: "Virtual Coins Live Reports"
+            },
+            axisX: {
+                interval: 2,
+                intervalType: "second"
+            },
+            axisY: [
+                {
+                    title: "Linear Scale",
+                    lineColor: "#369EAD",
+                    titleFontColor: "#369EAD",
+                    labelFontColor: "#369EAD"
+                },
+                {
+                    title: "Logarithmic Scale",
+                    logarithmic: true,
+                    lineColor: "#C24642",
+                    titleFontColor: "#C24642",
+                    labelFontColor: "#C24642"
+                }
+            ],
+            axisY2: [
+                {
+                    title: "Linear Scale",
+                    lineColor: "#7F6084",
+                    titleFontColor: "#7F6084",
+                    labelFontColor: "#7F6084"
+                },
+                {
+                    title: "Logarithmic Scale",
+                    logarithmic: true,
+                    interval: 1,
+                    lineColor: "#86B402",
+                    titleFontColor: "#86B402",
+                    labelFontColor: "#86B402"
+                }
+            ],
+            data: dataObjects // Update the data property with the modified dataObjects array
+        });
+
+
+
+        chart.render();
+    }
 
 
 });

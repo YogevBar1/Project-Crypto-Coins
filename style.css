@@ -1,14 +1,23 @@
-
 body {
     padding: 20px;
-    background-image: url('assets/images/backgroundImage.jpg');
 
+    /* parallax Scrolling */
+    background-image: url('assets/images/backgroundImage.jpg');
+    /* Set a specific height */
+    min-height: 500px;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 
 }
 
-#homeSection{
+#homeSection {
     text-align: center;
 }
+
 #reportsSection,
 #aboutSection {
     display: none;
@@ -18,7 +27,8 @@ body {
     cursor: pointer;
 }
 
-.card {
+/* I use here in advanced selector: */
+#coinsContainer>.card {
     display: inline-block;
     overflow: hidden;
 
@@ -35,5 +45,118 @@ body {
 .search {
 
     text-align: right;
+}
 
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    /* gap: 10px; */
+    margin-top: 20px;
+    /* Add margin to the top of the row */
+    padding: 10px;
+    /* Add padding around the row */
+    background-color: yellow;
+    border-radius: 25px;
+    /* Add rounded corners to the row */
+    box-shadow: 0 2px 4px rgba(0, 0, 5, 10);
+    /* Add a box shadow to the row */
+}
+
+
+/* Adjust styles for screens smaller than 600px (mobile) */
+@media only screen and (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .row {
+        justify-content: center;
+    }
+}
+
+/* Use CSS3 media queries */
+
+/* Adjust styles for screens smaller than 600px (mobile) */
+@media only screen and (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .row {
+        justify-content: center;
+        margin-top: 10px;
+        padding: 5px;
+    }
+}
+
+/* Adjust styles for screens between 601px and 900px */
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+    body {
+        padding: 30px;
+    }
+
+    .row {
+        gap: 10px;
+        margin-top: 30px;
+        padding: 20px;
+    }
+}
+
+/* Adjust styles for screens between 901px and 1200px */
+@media only screen and (min-width: 901px) and (max-width: 1200px) {
+    body {
+        padding: 40px;
+    }
+
+    .row {
+        margin-top: 40px;
+        padding: 30px;
+    }
+}
+
+/* Adjust styles for screens larger than 1200px */
+@media only screen and (min-width: 1201px) {
+    body {
+        padding: 50px;
+    }
+
+    .row {
+        margin-top: 50px;
+        padding: 40px;
+    }
+}
+
+#aboutParagraph {
+    color: white;
+    font-size: 35px;
+    background-color: rgba(255, 192, 203, 0.5);
+    /* Pink color with 50% transparency */
+}
+
+#yogevImg {
+    max-width: 15%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#homeSection {
+    color: red;
+}
+
+#aboutSection,
+#reportsSection {
+    color: red;
+    text-align: center;
+}
+
+#loadingGifContainer {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
 }
