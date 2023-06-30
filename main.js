@@ -2,13 +2,25 @@
 
 "use strict";
 
+// Defines the variables outside in case we want to reset the graph:
+
+let intervalId; // Declare the intervalId variable outside of the handleHome function
+
+let coinData = [];// Declare the coinData variable outside of the handleHome function
+
+// Defines a variable that will count the number of columns
+let counter = 0;
+
+
+
 $(() => {
-    // let chart; // Declare the chart variable outside of the handleHome() function
+    let chart; // Declare the chart variable outside of the handleHome() function
 
     handleHome();
 
     // Clean the storage before open new page
     localStorage.clear();
+
 
     $("a.nav-link").click(function () {
 
@@ -41,6 +53,7 @@ $(() => {
 
     //Handles the home section.
     async function handleHome() {
+
         // Retrieve selected coins from local storage or use an empty array
         const selectedCoins = JSON.parse(localStorage.getItem("selectedCoins")) || [];
         // Set the checked state of checkboxes based on selected coins
@@ -53,10 +66,10 @@ $(() => {
         const coins = await getJson("coins.json");
         // const coins = await getJson("https://api.coingecko.com/api/v3/coins/list");
         displayCoins(coins);
-        toggleCoin("zoc");
-        // toggleCoin("zrx");
-        // toggleCoin("1mb");
-        // toggleCoin("oxd");
+        toggleCoin("zoc"); //Delete before send!!!
+
+
+
     }
 
     // Displays the coins in the UI.
@@ -92,25 +105,23 @@ $(() => {
         $("#coinsContainer").html(html);
     }
 
-
-    //Handles the "More Info" button click event.
+    //Handles the "More Info" button click event:
     async function handleMoreInfo(coinId) {
         if (localStorage.getItem(coinId) === null) {
             const coin = await getJson("https://api.coingecko.com/api/v3/coins/" + coinId);
-            const imageSource = coin.image.thumb;
-            const usd = coin.market_data.current_price.usd;
-            const eur = coin.market_data.current_price.eur;
-            const ils = coin.market_data.current_price.ils;
 
+            // Define that if the data is invalid the user will see empty string and not "undefined":
+            const imageSource = coin.image?.thumb || "";
+            const usd = coin.market_data.current_price?.usd || "";
+            const eur = coin.market_data.current_price?.eur || "";
+            const ils = coin.market_data.current_price?.ils || "";
 
             const moreInfo = `
             <img src="${imageSource}"> <br>
             USD: $${usd} <br>
             EUR: Є${eur} <br>
             ILS: ₪${ils}
-        `;
-
-
+                                `;
 
             // $(`#collapse_${coinId}`).children().html(moreInfo);
             $(`#collapse_${coinId}`).html(moreInfo);
@@ -148,8 +159,6 @@ $(() => {
             $(`.${coinId}`).append(storedInfo);
 
         }
-
-
     }
 
     //  Fetches JSON data from the specified URL.
@@ -159,8 +168,9 @@ $(() => {
         return json;
     }
 
-
     $("#search-btn").click(() => {
+
+        // Change the value of the search to capital letters because later we will compare it to the ID in capital letters:
         const searchInput = $("#search-input").val().toUpperCase();
 
         if (searchInput === "") {
@@ -170,6 +180,7 @@ $(() => {
 
         let coinFound = false; // Flag to track if the coin is found
 
+        // Looking for the ID among all coins:
         $(".card").each(function () {
             const cardId = $(this).attr("id");
             if (cardId && cardId.toUpperCase() === searchInput) {
@@ -182,15 +193,11 @@ $(() => {
 
             if (!coinFound)
                 $("#errorSearchContainer").html("Please enter a valid coin name to search.");
-            else {
+            else
                 $("#errorSearchContainer").html(""); // Clear the error message if a coin is found
 
-
-            }
-
-
         })
-
+        
         // Empty the search box
         $("#search-input").val("");
 
@@ -215,15 +222,16 @@ $(() => {
 
         // Show the modal dialog
         modal.modal("show");
-
-
-
     }
-
 
     //define a variable for the six coin
     let sixCoinNameToAdd = "";
     $("#coinsContainer").on("change", ".toggle-card", function () {
+
+        //display to the user the selected coins:
+        const selectedCoinsNames = recognizeSelectedCoinsReturnArrOfThereNames();
+        $("#selectedCoinsListShowToUser").text("Selected Coins:" + selectedCoinsNames);
+
         const selectedCoins = $(".toggle-card:checked").length;
 
         // Define the maximum number of allowed coins
@@ -238,33 +246,24 @@ $(() => {
         }
 
         const selectedCoinNames = recognizeSelectedCoinsReturnArrOfThereNames();
-
         console.log("Selected coins:", selectedCoinNames);
-
 
     });
 
-    let selectedCoinToCancel;
-    let toggleSwitch;
-
 
     $("#cancelCurrencyBtn").click(function () {
-        selectedCoinToCancel = $("#cancelCurrencySelect").val();
+
+        let selectedCoinToCancel = $("#cancelCurrencySelect").val();
 
         // Find the corresponding toggle switch for the canceled currency
-        toggleSwitch = $(`.toggle-card[value="${selectedCoinToCancel}"]`);
         console.log(" coin:", selectedCoinToCancel);
         toggleCoin(selectedCoinToCancel);
 
         $("#myModal").modal("hide");
 
-
         // Store the selected coin in a variable
         const selectedCoin = $("#cancelCurrencySelect option:selected").text();
         console.log("Selected coin:", selectedCoin);
-
-        selectedCoinToCancel = null;
-        toggleSwitch = null;
 
         // toggle again the sixth coin we want to add:
         toggleCoin(sixCoinNameToAdd);
@@ -299,39 +298,32 @@ $(() => {
         const selectedCoinNames = [];
         $(".toggle-card:checked").each(function () {
             const coinName = $(this).closest(".card").find(".card-title").text();
-            console.log(coinName);
             selectedCoinNames.push(coinName);
         });
         return selectedCoinNames;
 
     }
 
-    let coinData = {};
-
-    let intervalId;
-
-
     function handleReports() {
 
+
+        // Clears the graph just in case and the user will return from the real-time reports screen to the home screen:
+        cleanup();
 
 
         console.log("handleReports start:");
         const selectedCoins = recognizeSelectedCoinsReturnArrOfThereNames();
-        if (selectedCoins.length <= 0) {
+        if (selectedCoins.length === 0) {
             alert("Please choose at least one coin");
             $("#loadingGifContainer").hide();
             return;
 
         }
-
         console.log(selectedCoins);
         let coinsToShow = selectedCoins.map(coin => coin);
         console.log(coinsToShow);
         let coinsId = coinsToShow.join();
         console.log(coinsId);
-
-        // let coinData = {};
-        cleanup(); // Call the cleanup function before starting the interval
 
 
         intervalId = setInterval(function () {
@@ -348,7 +340,11 @@ $(() => {
 
                 }
 
+
+
                 renderChart(coinData);
+
+                console.log("Coin data:" + coinData);
 
                 // Hide the loading GIF after data is updated
                 $("#loadingGifContainer").hide();
@@ -358,16 +354,18 @@ $(() => {
 
     }
 
+    // This function resets the graph:
     function cleanup() {
         clearInterval(intervalId); // Clear the interval
-        coinData = {}; // Reset the coinData object
+        coinData = []; // Reset the coinData object
+        counter = 0;
     }
 
     // Get data of coins checked by the user
     async function getReportData(symbols, callback) {
 
-        const response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symbols}&tsyms=usd,eur,ils`);
-        const data = await response.json()
+        const response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${symbols}&tsyms=usd`);
+        const data = await response.json();
         callback(data);
     }
 
@@ -375,6 +373,13 @@ $(() => {
         let dataObjects = [];
 
         for (let coin in coinsData) {
+
+            console.log("length:", coinsData[coin].length);
+            console.log("Counter:", counter);
+            console.log("Coin data:", coinsData[coin]);
+            // Limits the amount of columns in the graph to 10 columns:
+            if (counter > 10 && coinsData[coin] !== null && coinsData[coin] !== undefined)
+                coinsData[coin].shift();    //Deletes the first column after we reach the limit
 
             dataObjects.push({
                 type: "spline",
@@ -384,9 +389,11 @@ $(() => {
             });
 
         }
+        // Increases the counter by 1 outside the loop every time we have completed a round of a column in the graph:
+        counter++;
 
 
-        let chart = new CanvasJS.Chart("chartContainer", {
+        chart = new CanvasJS.Chart("chartContainer", {
             title: {
                 text: "Virtual Coins Live Reports"
             },
@@ -424,14 +431,14 @@ $(() => {
                     titleFontColor: "#86B402",
                     labelFontColor: "#86B402"
                 }
+
             ],
             data: dataObjects // Update the data property with the modified dataObjects array
         });
 
-
+        chart.options.data = dataObjects; // Update the data property with the modified dataObjects array
 
         chart.render();
     }
-
 
 });

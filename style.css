@@ -65,69 +65,6 @@ body {
 }
 
 
-/* Adjust styles for screens smaller than 600px (mobile) */
-@media only screen and (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
-
-    .row {
-        justify-content: center;
-    }
-}
-
-/* Use CSS3 media queries */
-
-/* Adjust styles for screens smaller than 600px (mobile) */
-@media only screen and (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
-
-    .row {
-        justify-content: center;
-        margin-top: 10px;
-        padding: 5px;
-    }
-}
-
-/* Adjust styles for screens between 601px and 900px */
-@media only screen and (min-width: 601px) and (max-width: 900px) {
-    body {
-        padding: 30px;
-    }
-
-    .row {
-        gap: 10px;
-        margin-top: 30px;
-        padding: 20px;
-    }
-}
-
-/* Adjust styles for screens between 901px and 1200px */
-@media only screen and (min-width: 901px) and (max-width: 1200px) {
-    body {
-        padding: 40px;
-    }
-
-    .row {
-        margin-top: 40px;
-        padding: 30px;
-    }
-}
-
-/* Adjust styles for screens larger than 1200px */
-@media only screen and (min-width: 1201px) {
-    body {
-        padding: 50px;
-    }
-
-    .row {
-        margin-top: 50px;
-        padding: 40px;
-    }
-}
-
 #aboutParagraph {
     color: white;
     font-size: 35px;
@@ -160,3 +97,78 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+
+#selectedCoinsListShowToUser {
+    color: red;
+    padding-left: 35px;
+}
+
+
+
+/* Use CSS3 media queries */
+
+
+/* Adjust styles for screens smaller than 600px (mobile) */
+@media only screen and (max-width: 600px) {
+    body {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .row {
+        justify-content: center;
+        margin-top: 10px;
+        padding: 5px;
+    }
+
+    .col-md-8,
+    .col-md-4 {
+        width: 100%;
+    }
+}
+
+/* Adjust styles for screens between 601px and 900px */
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+    body {
+        padding: 30px;
+    }
+
+    .row {
+        gap: 10px;
+        margin-top: 30px;
+        padding: 20px;
+    }
+}
+
+/* Adjust styles for screens between 901px and 1200px */
+@media only screen and (min-width: 901px) and (max-width: 1200px) {
+    body {
+        padding: 40px;
+        font-size: 13px;
+
+    }
+
+    .row {
+        margin-top: 40px;
+        padding: 30px;
+    }
+}
+
+/* Adjust styles for screens larger than 1200px */
+@media only screen and (min-width: 1201px) {
+    body {
+        padding: 50px;
+        font-size: 16px;
+    }
+
+    .row {
+        margin-top: 50px;
+        padding: 40px;
+    }
+}
+
+/*   
+  h2{
+    background-color: white;
+  
+  } */
