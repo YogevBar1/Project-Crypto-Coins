@@ -62,7 +62,9 @@
                 <li class="nav-item">
                     <a id="aboutLink" class="nav-link" data-section="aboutSection">About</a>
                 </li>
-                <h2 id="selectedCoinsListShowToUser"></h2>
+                <h2 id="selectedCoinsListShowToUser">No marked coins</h2>
+                <h2 id="errorWithApi"></h2>
+                <h2 id="errorLiveReports"></h2>
         </div>
 
         <div id="searchRow" class="col-md-4">
@@ -77,14 +79,14 @@
     </div>
 
     <section id="homeSection">
-        <h2>Currencies</h2>
+        <h2 id="currenciesTitle">Currencies</h2>
         <div id="coinsContainer">
 
         </div>
     </section>
 
     <section id="reportsSection">
-        <h2>Reports</h2>
+        <h2 id="reportsTitle">Reports</h2>
         <div id="chartContainer"></div>
 
         <div id="loadingGifContainer">
@@ -95,7 +97,7 @@
     </section>
 
     <section id="aboutSection">
-        <h2>About</h2>
+        <h2 id="aboutTitle">About</h2>
         <p id="aboutParagraph">
             My name is Yogev Bar, and this is my second project in the John Bryce Full Stack course. This project
             showcases my web development skills and knowledge gained throughout the course.

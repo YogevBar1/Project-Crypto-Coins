@@ -1,3 +1,8 @@
+html {
+    zoom: 0.5;
+    /* Adjust the value to change the zoom level that fit my web page */
+}
+
 body {
     padding: 20px;
 
@@ -31,6 +36,7 @@ body {
 #coinsContainer>.card {
     display: inline-block;
     overflow: hidden;
+    margin: 40px;
 
 }
 
@@ -42,10 +48,20 @@ body {
 
 }
 
-.search {
+#searchRow {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
 
-    text-align: right;
 }
+
+#search {
+    display: inline-block;
+    text-align: left;
+}
+
+
 
 .row {
     display: flex;
@@ -103,11 +119,12 @@ body {
     padding-left: 35px;
 }
 
+#errorLiveReports {
+    color: red;
 
+}
 
 /* Use CSS3 media queries */
-
-
 /* Adjust styles for screens smaller than 600px (mobile) */
 @media only screen and (max-width: 600px) {
     body {
@@ -167,8 +184,12 @@ body {
     }
 }
 
-/*   
-  h2{
-    background-color: white;
-  
-  } */
+#currenciesTitle,
+#reportsTitle,
+#aboutTitle {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 13%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
